@@ -1,0 +1,7 @@
+.ui-carousel-item { overflow: hidden; }
+.ui-carousel-clip { overflow: hidden; position: relative; z-index: 2; left: 0px; }
+.ui-carousel-slide { margin: 0; padding: 0; position: relative; list-style-type: none; z-index: 1; }
+
+.ui-carousel-horizontal .ui-carousel-item { float: left; }
+
+.ui-carousel-vertical .ui-carousel-item { float: none; }
