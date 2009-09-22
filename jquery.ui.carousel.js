@@ -4,6 +4,7 @@
  * (based on jCarouselLite 1.0.1)
  *
  * Copyright (c) 2008 Chris Leishman (chrisleishman.com)
+ * Copyright (c) 2009 James Gilliland (nerdpalace.net)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
  * and GPL (GPL-LICENSE.txt) licenses.
  */
