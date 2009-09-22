@@ -1,6 +1,6 @@
 /**
  * jQuery UI Carousel 1.0.0
- * 
+ *
  * (based on jCarouselLite 1.0.1)
  *
  * Copyright (c) 2008 Chris Leishman (chrisleishman.com)
@@ -8,17 +8,17 @@
  * and GPL (GPL-LICENSE.txt) licenses.
  */
 (function($) {
-    
+
 $.widget('ui.carousel', {
     _init: function() {
         var self = this, o = this.options, div = this.element;
-        
+
         this.running = false;
         this.curr = o.start;
-        
+
         o.animCss = o.vertical? 'top':'left';
         o.sizeCss = o.vertical? 'height':'width';
-        
+
         var ul = $("ul", div), tLi = $("li", ul), tl = tLi.size(), v = o.visible;
 
         if (o.circular) {
@@ -52,7 +52,7 @@ $.widget('ui.carousel', {
             }, o.auto+o.speed);
         }
     },
-    
+
     prev: function() {
         return this._go(this.curr - this.options.scroll);
     },
@@ -79,18 +79,18 @@ $.widget('ui.carousel', {
         var s = o.scroll;
         return this._go((item < curr)? (curr - (Math.floor((curr-item)/s)*s + s)) : (curr + (Math.floor((item-curr)/s)*s)));
     },
-    
+
     reset: function() {
         var o = this.options;
         if (this.curr == o.start) return;
         this.curr = o.start;
         ul.css(o.animCss, -(this.curr * o.liSize));
     },
-    
+
     _go: function(to) {
         var self = this, o = this.options, e = this.element;
         var v = o.visible, ul = this.element.find('ul');
-        
+
         if (!self.running) {
             var prev = self.curr;
             var next;
