@@ -20,9 +20,19 @@ $.widget('ui.carousel', {
         o.animCss = o.vertical? 'top':'left';
         o.sizeCss = o.vertical? 'height':'width';
 
-        var ul = $("ul", div), tLi = $("li", ul), tl = tLi.size(), v = o.visible;
+        var ul = $("ul", div),
+          clip = $(".ui-carousel-clip", div),
+          v = o.visible;
+
+        // Auto add clip wrapper if missing.
+        if (clip.size() == 0) {
+            ul.wrap('<div class="ui-carousel-clip"></div>');
+            clip = $(".ui-carousel-clip", div);
+        }
 
         if (o.circular) {
+            var tLi = $("li", ul),
+              tl = tLi.size();
             ul.prepend(tLi.slice(tl-v).clone())
               .append(tLi.slice(0,v).clone());
             o.start += v;
@@ -35,16 +45,16 @@ $.widget('ui.carousel', {
 
         li.css({overflow: "hidden", float: o.vertical ? "none" : "left"});
         ul.css({margin: "0", padding: "0", position: "relative", "list-style-type": "none", "z-index": "1"});
-        div.css({overflow: "hidden", position: "relative", "z-index": "2", left: "0px"});
+        clip.css({overflow: "hidden", position: "relative", "z-index": "2", left: "0px"});
 
         o.liSize = o.vertical ? this._height(li) : this._width(li);   // Full li size(incl margin)-Used for animation
         var ulSize = o.liSize * o.itemLength;                   // size of full ul(total length, not just for the visible items)
-        var divSize = o.liSize * v;                           // size of entire div(total length for just the visible items)
+        var clipSize = o.liSize * v;                           // size of entire div(total length for just the visible items)
 
         li.css({width: li.width(), height: li.height()});
         ul.css(o.sizeCss, ulSize+"px").css(o.animCss, -(this.curr*o.liSize));
 
-        div.css(o.sizeCss, divSize+"px");                     // Width of the DIV. length of visible images
+        clip.css(o.sizeCss, clipSize+"px");                   // Width of the DIV. length of visible images
 
         this._go(o.start);
         if (o.auto) {
