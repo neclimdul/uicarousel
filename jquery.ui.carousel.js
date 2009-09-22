@@ -12,13 +12,23 @@
 
 $.widget('ui.carousel', {
     _init: function() {
-        var self = this, o = this.options, div = this.element;
+        var self = this,
+            o = this.options,
+            div = this.element,
+            vert = (o.orientation != "horizontal");
 
+        this._detectOrientation();
         this.running = false;
         this.curr = o.start;
 
-        o.animCss = o.vertical? 'top':'left';
-        o.sizeCss = o.vertical? 'height':'width';
+		this.element
+			.addClass("ui-carousel"
+				+ " ui-carousel-" + this.orientation
+				+ " ui-widget"
+				+ " ui-widget-content"
+				+ " ui-corner-all");
+        o.animCss = vert ? "top" : "left";
+        o.sizeCss = vert ? "height" : "width";
 
         var ul = $("ul", div),
           clip = $(".ui-carousel-clip", div),
@@ -41,13 +51,12 @@ $.widget('ui.carousel', {
         var li = $("li", ul);
         o.itemLength = li.size();
 
-        div.css("visibility", "visible");
+        div.css("visibility", "visible"); // Why not just show?
 
-        li.css({overflow: "hidden", float: o.vertical ? "none" : "left"});
-        ul.css({margin: "0", padding: "0", position: "relative", "list-style-type": "none", "z-index": "1"});
-        clip.css({overflow: "hidden", position: "relative", "z-index": "2", left: "0px"});
+        li.addClass("ui-carousel-item");
+        ul.addClass("ui-carousel-slide");
 
-        o.liSize = o.vertical ? this._height(li) : this._width(li);   // Full li size(incl margin)-Used for animation
+        o.liSize = vert ? this._height(li) : this._width(li);   // Full li size(incl margin)-Used for animation
         var ulSize = o.liSize * o.itemLength;                   // size of full ul(total length, not just for the visible items)
         var clipSize = o.liSize * v;                           // size of entire div(total length for just the visible items)
 
@@ -144,6 +153,10 @@ $.widget('ui.carousel', {
         return false;
     },
 
+	_detectOrientation: function() {
+		this.orientation = this.options.orientation == 'vertical' ? 'vertical' : 'horizontal';
+	},
+
     _css: function(el, prop) {
         return parseInt($.css(el[0], prop)) || 0;
     },
@@ -161,7 +174,7 @@ $.extend($.ui.carousel, {
         auto: null,
         speed: 200,
         easing: null,
-        vertical: false,
+        orientation: "horizontal",
         circular: true,
         visible: 3,
         start: 0,
