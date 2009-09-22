@@ -19,7 +19,6 @@ $.widget('ui.carousel', {
 
         this._detectOrientation();
         this.running = false;
-        this.curr = o.start;
 
 		this.element
 			.addClass("ui-carousel"
@@ -49,6 +48,7 @@ $.widget('ui.carousel', {
         }
 
         var li = $("li", ul);
+        this.curr = o.start;
         o.itemLength = li.size();
 
         div.css("visibility", "visible"); // Why not just show?
@@ -61,11 +61,10 @@ $.widget('ui.carousel', {
         var clipSize = o.liSize * v;                           // size of entire div(total length for just the visible items)
 
         li.css({width: li.width(), height: li.height()});
-        ul.css(o.sizeCss, ulSize+"px").css(o.animCss, -(this.curr*o.liSize));
+        ul.css(o.sizeCss, ulSize + "px").css(o.animCss, -(this.curr * o.liSize));
 
-        clip.css(o.sizeCss, clipSize+"px");                   // Width of the DIV. length of visible images
+        clip.css(o.sizeCss, clipSize + "px");                   // Width of the DIV. length of visible images
 
-        this._go(o.start);
         if (o.auto) {
             setInterval(function() {
                 self.next();
