@@ -45,6 +45,7 @@ $.widget('ui.carousel', {
 
         div.css(o.sizeCss, divSize+"px");                     // Width of the DIV. length of visible images
 
+        this._go(o.start);
         if (o.auto) {
             setInterval(function() {
                 self.next();
