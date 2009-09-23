@@ -18,6 +18,7 @@ $.widget('ui.carousel', {
             vert = (o.orientation != "horizontal");
 
         this._detectOrientation();
+        this._detectNavigation();
         this._running = false;
 
 		this.element
@@ -25,7 +26,8 @@ $.widget('ui.carousel', {
 				+ " ui-carousel-" + this.orientation
 				+ " ui-widget"
 				+ " ui-widget-content"
-				+ " ui-corner-all");
+				+ " ui-corner-all"
+				+ " ui-helper-clearfix");
         o.animCss = vert ? "top" : "left";
         o.sizeCss = vert ? "height" : "width";
 
@@ -155,6 +157,30 @@ $.widget('ui.carousel', {
 
 	_detectOrientation: function() {
 		this.orientation = this.options.orientation == 'vertical' ? 'vertical' : 'horizontal';
+	},
+	
+	_detectNavigation: function() {
+	    var self = this,
+	        class_p = " ui-icon-triangle-1-",
+	        class_n = " ui-icon-triangle-1-";
+        if (this.orientation == "horizontal") {
+            class_p += "w";
+            class_n += "e";
+        }
+        else {
+            class_p += "n";
+            class_n += "s";
+        }
+	    $(".ui-carousel-prev", this.element)
+	        .addClass("ui-icon" + class_p)
+	        .click(function() {
+	            self.prev();
+    	    });
+	    $(".ui-carousel-next", this.element)
+	        .addClass("ui-icon" + class_n)
+    	    .click(function() {
+    	        self.next();
+    	    });
 	},
 
     _css: function(el, prop) {
