@@ -19,7 +19,7 @@ $.widget('ui.carousel', {
 
         this._detectOrientation();
         this._detectNavigation();
-        this._running = false;
+        this.running = false;
 
 		this.element
 			.addClass("ui-carousel"
@@ -50,7 +50,7 @@ $.widget('ui.carousel', {
         }
 
         var li = $("li", ul);
-        this._curr = o.start;
+        this.curr = o.start;
         o.itemLength = li.size();
 
         div.css("visibility", "visible"); // Why not just show?
@@ -63,7 +63,7 @@ $.widget('ui.carousel', {
         var clipSize = o.liSize * v;                           // size of entire div(total length for just the visible items)
 
         li.css({width: li.width(), height: li.height()});
-        ul.css(o.sizeCss, ulSize + "px").css(o.animCss, -(this._curr * o.liSize));
+        ul.css(o.sizeCss, ulSize + "px").css(o.animCss, -(this.curr * o.liSize));
 
         clip.css(o.sizeCss, clipSize + "px");                   // Width of the DIV. length of visible images
 
@@ -75,25 +75,25 @@ $.widget('ui.carousel', {
     },
 
     prev: function() {
-        return this._go(this._curr - this.options.scroll);
+        return this._go(this.curr - this.options.scroll);
     },
 
     next: function() {
-        return this._go(this._curr + this.options.scroll);
+        return this._go(this.curr + this.options.scroll);
     },
 
     visible: function(from) {
         if (from == undefined)
-            from = this._curr;
+            from = this.curr;
         return this.element.find('li').slice(from).slice(0, this.options.visible);
     },
 
     at: function() {
-        return this._curr;
+        return this.curr;
     },
 
     view: function(item) {
-        var o = this.options, curr = this._curr;
+        var o = this.options, curr = this.curr;
         if (o.circular)
             item = item + o.visible;
         if (item >= curr && item < curr + o.visible)
@@ -104,21 +104,21 @@ $.widget('ui.carousel', {
 
     reset: function() {
         var o = this.options;
-        if (this._curr == o.start) return;
-        this._curr = o.start;
-        ul.css(o.animCss, -(this._curr * o.liSize));
+        if (this.curr == o.start) return;
+        this.curr = o.start;
+        ul.css(o.animCss, -(this.curr * o.liSize));
     },
 
     _go: function(to) {
         var self = this, o = this.options, e = this.element;
         var v = o.visible, ul = this.element.find('ul');
 
-        if (!self._running) {
-            var prev = self._curr;
+        if (!self.running) {
+            var prev = self.curr;
             var next;
 
             if (o.circular) {            // If circular we are in first or last, then goto the other end
-                if (to == self._curr) return;
+                if (to == self.curr) return;
                 if (to <= o.start-v-1) {           // If first, then goto last
                     ul.css(o.animCss, -((o.itemLength-(v*2))*o.liSize)+"px");
                     // If "scroll" > 1, then the "to" might not be equal to the condition; it can be lesser depending on the number of elements.
@@ -136,19 +136,19 @@ $.widget('ui.carousel', {
                 if (to < 0)
                     to = 0;
                 // If non-circular and to points to first or last, we just return.
-                if (to == self._curr) return;
+                if (to == self.curr) return;
                 else next = to;
             }
 
-            o.beforeStart.call(e, self.visible(self._curr), self.visible(next));
-            self._running = true;
-            self._curr = next;
+            o.beforeStart.call(e, self.visible(self.curr), self.visible(next));
+            self.running = true;
+            self.curr = next;
 
             ul.animate(
-                o.animCss == "left" ? { left: -(self._curr*o.liSize) } : { top: -(self._curr*o.liSize) } , o.speed, o.easing,
+                o.animCss == "left" ? { left: -(self.curr*o.liSize) } : { top: -(self.curr*o.liSize) } , o.speed, o.easing,
                 function() {
-                    self._running = false;
-                    o.afterEnd.call(e, self.visible(self._curr), self.visible(prev));
+                    self.running = false;
+                    o.afterEnd.call(e, self.visible(self.curr), self.visible(prev));
                 }
             );
         }
