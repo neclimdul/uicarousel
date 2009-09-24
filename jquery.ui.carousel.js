@@ -136,6 +136,7 @@ $.widget('ui.carousel', {
         // Make sure we actually want to go somewhere.
         if (!(this.running || to == this.curr)) {
             var prev = this.curr,
+                e = this.element,
                 l = this.itemLength,
                 b = this.offset; // buffer size.
 
