@@ -15,15 +15,13 @@ $.widget('ui.carousel', {
         var self = this,
             o = this.options,
             div = this.element,
-            vert = (o.orientation != "horizontal"),
-            sizeCss = vert ? "height" : "width";
+            vert = (o.orientation != "horizontal");
 
         this._detectOrientation();
         this._detectNavigation();
         this.running = false;
         this.curr = o.start;
         this.offset = 0;
-        this.animCss = vert ? "top" : "left";
 
 		this.element
 			.addClass("ui-carousel"
@@ -33,43 +31,25 @@ $.widget('ui.carousel', {
 				+ " ui-corner-all"
 				+ " ui-helper-clearfix");
 
-        var ul = this.slide = $("ul", div),
-          clip = $(".ui-carousel-clip", div),
-          v = o.visible;
+        var ul = this.slide = $("ul", div);
+        this.clip = $(".ui-carousel-clip", div);
 
         // Auto add clip wrapper if missing.
-        if (clip.size() == 0) {
+        if (this.clip.size() == 0) {
             ul.wrap('<div class="ui-carousel-clip"></div>');
-            clip = $(".ui-carousel-clip", div);
+            this.clip = $(".ui-carousel-clip", div);
         }
 
         // Special handling when circular for smooth scrolling.
         if (o.circular) {
-            this.offset = Math.max(v, o.scroll);
+            this.offset = Math.max(o.visible, o.scroll);
             var tLi = $("li", ul),
               tl = tLi.size();
             ul.prepend(tLi.slice(tl - this.offset).clone())
               .append(tLi.slice(0, this.offset).clone());
         }
 
-        // Setup items and item information.
-        var li = $("li", ul).addClass("ui-carousel-item");
-        this.itemLength = li.size() - (2 * this.offset);
-        li.css({width: li.width(), height: li.height()});
-
-        // Store the visible size for the scoll dimension.
-        this.liSize = vert ? this._height(li) : this._width(li);    // Full li size(incl margin)-Used for animation
-
-        // Setup our slide ul.
-        ul.addClass("ui-carousel-slide")
-            // make width full length of items.
-            .css(sizeCss, (this.liSize * (this.itemLength + 2 * this.offset)) + "px");
-
-        // Make sure we start in the right location.
-        this._set(o.start);
-
-        // Size of entire div (total length for the visible items)
-        clip.css(sizeCss, (this.liSize * v) + "px");
+        this.refresh();
 
         // Make things visible.
         div.css("visibility", "visible");
@@ -77,7 +57,7 @@ $.widget('ui.carousel', {
         if (o.auto) {
             setInterval(function() {
                 self.next();
-            }, o.auto+o.speed);
+            }, o.auto + o.speed);
         }
     },
 
@@ -119,6 +99,34 @@ $.widget('ui.carousel', {
         if (this.curr == o.start) return;
         this.curr = o.start;
         this._set(o.start);
+    },
+
+    // Refresh measurements.
+    refresh: function() {
+        var o = this.options,
+            vert = (this.orientation != "horizontal"),
+            sizeCss = vert ? "height" : "width";
+
+        this.animCss = vert ? "top" : "left";
+
+        // Setup items and item information.
+        var li = $("li", this.slide).addClass("ui-carousel-item");
+        this.itemLength = li.size() - (2 * this.offset);
+        // li.css({width: li.width(), height: li.height()});
+
+        // Store the visible size for the scoll dimension.
+        this.liSize = vert ? this._height(li) : this._width(li);    // Full li size(incl margin)-Used for animation
+
+        // Setup our slide ul.
+        this.slide.addClass("ui-carousel-slide");
+        // make width full length of items.
+        this._dimension(this.slide, sizeCss, this.liSize * (this.itemLength + 2 * this.offset));
+
+        // Size of entire div (total length for the visible items)
+        this._dimension(this.clip, sizeCss, this.liSize * o.visible);
+
+        // Make sure we're in the right location.
+        this._set(this.curr);
     },
 
     _go: function(to) {
@@ -208,6 +216,13 @@ $.widget('ui.carousel', {
     	    });
 	},
 
+    // Apply a dimension.
+    _dimension: function(e, prop, value) {
+        // To be flexible, we only apply then if they aren't 0 so we can recover hidden carousels.
+        if (value != 0) {
+            e.css(prop, value + "px");
+        }
+    },
     _css: function(el, prop) {
         return parseInt($.css(el[0], prop)) || 0;
     },
