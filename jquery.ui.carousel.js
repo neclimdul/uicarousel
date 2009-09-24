@@ -33,7 +33,7 @@ $.widget('ui.carousel', {
 				+ " ui-corner-all"
 				+ " ui-helper-clearfix");
 
-        var ul = $("ul", div),
+        var ul = this.slide = $("ul", div),
           clip = $(".ui-carousel-clip", div),
           v = o.visible;
 
@@ -45,17 +45,17 @@ $.widget('ui.carousel', {
 
         // Special handling when circular for smooth scrolling.
         if (o.circular) {
+            this.offset = Math.max(v, o.scroll);
             var tLi = $("li", ul),
               tl = tLi.size();
-            ul.prepend(tLi.slice(tl-v).clone())
-              .append(tLi.slice(0,v).clone());
-            this.offset = v;
+            ul.prepend(tLi.slice(tl - this.offset).clone())
+              .append(tLi.slice(0, this.offset).clone());
         }
 
         // Setup items and item information.
         var li = $("li", ul).addClass("ui-carousel-item");
+        this.itemLength = li.size() - (2 * this.offset);
         li.css({width: li.width(), height: li.height()});
-        this.itemLength = li.size();
 
         // Store the visible size for the scoll dimension.
         this.liSize = vert ? this._height(li) : this._width(li);    // Full li size(incl margin)-Used for animation
@@ -63,9 +63,10 @@ $.widget('ui.carousel', {
         // Setup our slide ul.
         ul.addClass("ui-carousel-slide")
             // make width full length of items.
-            .css(sizeCss, (this.liSize * this.itemLength) + "px")
-            // Make sure we start in the right location.
-            .css(this.animCss, -(this.offset * this.liSize) + "px");
+            .css(sizeCss, (this.liSize * (this.itemLength + 2 * this.offset)) + "px");
+
+        // Make sure we start in the right location.
+        this._set(o.start);
 
         // Size of entire div (total length for the visible items)
         clip.css(sizeCss, (this.liSize * v) + "px");
@@ -117,13 +118,13 @@ $.widget('ui.carousel', {
         var o = this.options;
         if (this.curr == o.start) return;
         this.curr = o.start;
-        ul.css(o.animCss, -(this.curr * o.liSize));
+        this._set(o.start);
     },
 
     _go: function(to) {
-        var self = this, o = this.options, e = this.element;
-        var v = o.visible, ul = this.element.find('ul');
-        to += this.offset;
+        var self = this,
+            o = this.options,
+            v = o.visible;
         if (!o.circular) {
             // If non-circular and to points to first or last, we just return.
             if (to > this.itemLength - v)
@@ -134,36 +135,48 @@ $.widget('ui.carousel', {
 
         // Make sure we actually want to go somewhere.
         if (!(this.running || to == this.curr)) {
-            var prev = this.curr;
-            var next = to; // this is the default, just move to where we're told
+            var prev = this.curr,
+                l = this.itemLength,
+                b = this.offset; // buffer size.
 
-            if (o.circular) {            // If circular we are in first or last, then goto the other end
-                if (to <= o.start - 1) {           // If first, then goto last
-                    ul.css(this.animCss, -((this.itemLength - (v * 2)) * this.liSize) + "px");
-                    next = this.itemLength - (v * 2) - o.scroll;
+            if (o.circular) {           // If circular we need to shift at the ends to emulate rotation.
+                if (to < -b) {          // If at the beginning, then go to end.
+                    prev += l;
+                    to += l;
+                    this._set(prev);
                 }
-                else if (to >= this.itemLength - v + 1) { // If last, then goto first
-                    ul.css(this.animCss, -(v * this.liSize) + "px");
-                    next = v + o.scroll;
+                else if (to > l) {      // If at end, then go to beginning.
+                    prev -= l;
+                    to -= l;
+                    this._set(prev);
                 }
+                to = to;
             }
 
-            o.beforeStart.call(e, this.visible(this.curr), this.visible(next));
-            this.running = true;
-            this.curr = next - this.offset; // recorrect for any offset
+            this.curr = to;     // reset internal pointer.
+            to += this.offset;  // adjust fo any offset.
 
-            ul.animate(
+            o.beforeStart.call(e, this.visible(this.curr), this.visible(to));
+            this.running = true;
+
+            this.slide.animate(
                 this.animCss == "left" ?
-                    { left: -(next * this.liSize) } :
-                    { top: -(next * this.liSize) },
+                    { left: -(to * this.liSize) } :
+                    { top: -(to * this.liSize) },
                 o.speed, o.easing,
                 function() {
                     self.running = false;
-                    o.afterEnd.call(e, self.visible(next), self.visible(prev));
+                    o.afterEnd.call(e, self.visible(to), self.visible(prev));
                 }
             );
+            return true;
         }
         return false;
+    },
+
+    // Directly set the location of the carousel instead of animating to a location.
+    _set: function(p) {
+        this.slide.css(this.animCss, -((p + this.offset) * this.liSize) + "px");
     },
 
 	_detectOrientation: function() {
