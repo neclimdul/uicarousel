@@ -15,11 +15,15 @@ $.widget('ui.carousel', {
         var self = this,
             o = this.options,
             div = this.element,
-            vert = (o.orientation != "horizontal");
+            vert = (o.orientation != "horizontal"),
+            sizeCss = vert ? "height" : "width";
 
         this._detectOrientation();
         this._detectNavigation();
         this.running = false;
+        this.curr = o.start;
+        this.offset = 0;
+        this.animCss = vert ? "top" : "left";
 
 		this.element
 			.addClass("ui-carousel"
@@ -28,8 +32,6 @@ $.widget('ui.carousel', {
 				+ " ui-widget-content"
 				+ " ui-corner-all"
 				+ " ui-helper-clearfix");
-        o.animCss = vert ? "top" : "left";
-        o.sizeCss = vert ? "height" : "width";
 
         var ul = $("ul", div),
           clip = $(".ui-carousel-clip", div),
@@ -40,32 +42,36 @@ $.widget('ui.carousel', {
             ul.wrap('<div class="ui-carousel-clip"></div>');
             clip = $(".ui-carousel-clip", div);
         }
+        ul.addClass("ui-carousel-slide");
 
+        // Special handling when circular for smooth scrolling.
         if (o.circular) {
             var tLi = $("li", ul),
               tl = tLi.size();
             ul.prepend(tLi.slice(tl-v).clone())
               .append(tLi.slice(0,v).clone());
-            o.start += v;
+            this.offset = v;
         }
 
         var li = $("li", ul);
-        this.curr = o.start;
-        o.itemLength = li.size();
+        this.itemLength = li.size();
+        li.addClass("ui-carousel-item")
+            .css({width: li.width(), height: li.height()});
 
-        div.css("visibility", "visible"); // Why not just show?
+        // Store the visible size for the scoll dimension.
+        this.liSize = vert ? this._height(li) : this._width(li);    // Full li size(incl margin)-Used for animation
 
-        li.addClass("ui-carousel-item");
-        ul.addClass("ui-carousel-slide");
+        // size of full ul(total length, not just for the visible items)
+        ul.css(sizeCss, (this.liSize * this.itemLength) + "px");
 
-        o.liSize = vert ? this._height(li) : this._width(li);   // Full li size(incl margin)-Used for animation
-        var ulSize = o.liSize * o.itemLength;                   // size of full ul(total length, not just for the visible items)
-        var clipSize = o.liSize * v;                           // size of entire div(total length for just the visible items)
+        // Size of entire div (total length for the visible items)
+        clip.css(sizeCss, (this.liSize * v) + "px");
 
-        li.css({width: li.width(), height: li.height()});
-        ul.css(o.sizeCss, ulSize + "px").css(o.animCss, -(this.curr * o.liSize));
+        // Make sure we start in the right location.
+        ul.css(this.animCss, -(this.offset * this.liSize) + "px");
 
-        clip.css(o.sizeCss, clipSize + "px");                   // Width of the DIV. length of visible images
+        // Make things visible.
+        div.css("visibility", "visible");
 
         if (o.auto) {
             setInterval(function() {
@@ -94,12 +100,17 @@ $.widget('ui.carousel', {
 
     view: function(item) {
         var o = this.options, curr = this.curr;
-        if (o.circular)
-            item = item + o.visible;
-        if (item >= curr && item < curr + o.visible)
+        if (item > curr && item <= curr + o.visible) {
             return;
-        var s = o.scroll;
-        return this._go((item < curr)? (curr - (Math.floor((curr-item)/s)*s + s)) : (curr + (Math.floor((item-curr)/s)*s)));
+        }
+        var s = o.scroll, tmp = 0;
+        if (item <= curr) {
+            tmp = curr - (Math.floor((curr - item) / s) * s + s);
+        }
+        else {
+            tmp = curr + (Math.floor((item - curr) / s) * s - s);
+        }
+        return this._go(tmp);
     },
 
     reset: function() {
@@ -112,43 +123,43 @@ $.widget('ui.carousel', {
     _go: function(to) {
         var self = this, o = this.options, e = this.element;
         var v = o.visible, ul = this.element.find('ul');
+        to += this.offset;
+        if (!o.circular) {
+            // If non-circular and to points to first or last, we just return.
+            if (to > this.itemLength - v)
+                to = this.itemLength - v;
+            if (to < 0)
+                to = 0;
+        }
 
-        if (!self.running) {
-            var prev = self.curr;
-            var next;
+        // Make sure we actually want to go somewhere.
+        if (!(this.running || to == this.curr)) {
+            var prev = this.curr;
+            var next = to; // this is the default, just move to where we're told
 
             if (o.circular) {            // If circular we are in first or last, then goto the other end
-                if (to == self.curr) return;
-                if (to <= o.start-v-1) {           // If first, then goto last
-                    ul.css(o.animCss, -((o.itemLength-(v*2))*o.liSize)+"px");
-                    // If "scroll" > 1, then the "to" might not be equal to the condition; it can be lesser depending on the number of elements.
-                    next = to==o.start-v-1 ? o.itemLength-(v*2)-1 : o.itemLength-(v*2)-o.scroll;
-                } else if (to >= o.itemLength - v + 1) { // If last, then goto first
-                    ul.css(o.animCss, -((v)*o.liSize)+"px");
-                    // If "scroll" > 1, then the "to" might not be equal to the condition; it can be greater depending on the number of elements.
-                    next = to==o.itemLength-v+1 ? v+1 : v+o.scroll;
-                } else {
-                    next = to;
+                if (to <= o.start - 1) {           // If first, then goto last
+                    ul.css(this.animCss, -((this.itemLength - (v * 2)) * this.liSize) + "px");
+                    next = this.itemLength - (v * 2) - o.scroll;
                 }
-            } else {
-                if (to > o.itemLength-v)
-                    to = o.itemLength-v;
-                if (to < 0)
-                    to = 0;
-                // If non-circular and to points to first or last, we just return.
-                if (to == self.curr) return;
-                else next = to;
+                else if (to >= this.itemLength - v + 1) { // If last, then goto first
+                    ul.css(this.animCss, -(v * this.liSize) + "px");
+                    next = v + o.scroll;
+                }
             }
 
-            o.beforeStart.call(e, self.visible(self.curr), self.visible(next));
-            self.running = true;
-            self.curr = next;
+            o.beforeStart.call(e, this.visible(this.curr), this.visible(next));
+            this.running = true;
+            this.curr = next - this.offset; // recorrect for any offset
 
             ul.animate(
-                o.animCss == "left" ? { left: -(self.curr*o.liSize) } : { top: -(self.curr*o.liSize) } , o.speed, o.easing,
+                this.animCss == "left" ?
+                    { left: -(next * this.liSize) } :
+                    { top: -(next * this.liSize) },
+                o.speed, o.easing,
                 function() {
                     self.running = false;
-                    o.afterEnd.call(e, self.visible(self.curr), self.visible(prev));
+                    o.afterEnd.call(e, self.visible(next), self.visible(prev));
                 }
             );
         }
