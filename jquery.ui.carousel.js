@@ -42,7 +42,6 @@ $.widget('ui.carousel', {
             ul.wrap('<div class="ui-carousel-clip"></div>');
             clip = $(".ui-carousel-clip", div);
         }
-        ul.addClass("ui-carousel-slide");
 
         // Special handling when circular for smooth scrolling.
         if (o.circular) {
@@ -53,22 +52,23 @@ $.widget('ui.carousel', {
             this.offset = v;
         }
 
-        var li = $("li", ul);
+        // Setup items and item information.
+        var li = $("li", ul).addClass("ui-carousel-item");
+        li.css({width: li.width(), height: li.height()});
         this.itemLength = li.size();
-        li.addClass("ui-carousel-item")
-            .css({width: li.width(), height: li.height()});
 
         // Store the visible size for the scoll dimension.
         this.liSize = vert ? this._height(li) : this._width(li);    // Full li size(incl margin)-Used for animation
 
-        // size of full ul(total length, not just for the visible items)
-        ul.css(sizeCss, (this.liSize * this.itemLength) + "px");
+        // Setup our slide ul.
+        ul.addClass("ui-carousel-slide")
+            // make width full length of items.
+            .css(sizeCss, (this.liSize * this.itemLength) + "px")
+            // Make sure we start in the right location.
+            .css(this.animCss, -(this.offset * this.liSize) + "px");
 
         // Size of entire div (total length for the visible items)
         clip.css(sizeCss, (this.liSize * v) + "px");
-
-        // Make sure we start in the right location.
-        ul.css(this.animCss, -(this.offset * this.liSize) + "px");
 
         // Make things visible.
         div.css("visibility", "visible");
