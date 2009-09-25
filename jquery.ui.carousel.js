@@ -16,11 +16,11 @@ $.widget('ui.carousel', {
             o = this.options,
             div = this.element;
 
-        this._detectOrientation();
-        this._detectNavigation();
+        this.orientation = this.options.orientation == 'vertical' ? 'vertical' : 'horizontal';
         this.running = false;
         this.curr = o.start;
         this.offset = 0;
+        this._detectNavigation();
 
         this.element
             .addClass("ui-carousel" +
@@ -42,9 +42,8 @@ $.widget('ui.carousel', {
         // Special handling when circular for smooth scrolling.
         if (o.circular) {
             this.offset = Math.max(o.visible, o.scroll);
-            var tLi = $("li", ul),
-              tl = tLi.size();
-            ul.prepend(tLi.slice(tl - this.offset).clone())
+            var tLi = $("li", ul);
+            ul.prepend(tLi.slice(tLi.size() - this.offset).clone())
               .append(tLi.slice(0, this.offset).clone());
         }
 
@@ -122,10 +121,10 @@ $.widget('ui.carousel', {
         // Setup our slide ul.
         this.slide.addClass("ui-carousel-slide");
         // make width full length of items.
-        this._dimension(this.slide, sizeCss, this.liSize * (this.itemLength + 2 * this.offset));
+        this.slide.css(sizeCss, this.liSize * (this.itemLength + 2 * this.offset));
 
         // Size of entire div (total length for the visible items)
-        this._dimension(this.clip, sizeCss, this.liSize * o.visible);
+        this.clip.css(sizeCss, this.liSize * o.visible);
 
         // Make sure we're in the right location.
         this._set(this.curr);
@@ -166,7 +165,7 @@ $.widget('ui.carousel', {
             }
 
             this.curr = to;     // reset internal pointer.
-            to += this.offset;  // adjust fo any offset.
+            to += b;  // adjust fo any offset.
 
             o.beforeStart.call(e, this.visible(this.curr), this.visible(to));
             this.running = true;
@@ -189,10 +188,6 @@ $.widget('ui.carousel', {
     // Directly set the location of the carousel instead of animating to a location.
     _set: function(p) {
         this.slide.css(this.animCss, -((p + this.offset) * this.liSize) + "px");
-    },
-
-    _detectOrientation: function() {
-        this.orientation = this.options.orientation == 'vertical' ? 'vertical' : 'horizontal';
     },
 
     _detectNavigation: function() {
@@ -219,13 +214,6 @@ $.widget('ui.carousel', {
             });
     },
 
-    // Apply a dimension.
-    _dimension: function(e, prop, value) {
-        // To be flexible, we only apply then if they aren't 0 so we can recover hidden carousels.
-        if (value !== 0) {
-            e.css(prop, value + "px");
-        }
-    },
     _css: function(el, prop) {
         return parseInt($.css(el[0], prop), 10) || 0;
     },
