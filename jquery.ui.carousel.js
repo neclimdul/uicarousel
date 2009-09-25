@@ -14,8 +14,7 @@ $.widget('ui.carousel', {
     _init: function() {
         var self = this,
             o = this.options,
-            div = this.element,
-            vert = (o.orientation != "horizontal");
+            div = this.element;
 
         this._detectOrientation();
         this._detectNavigation();
@@ -24,18 +23,18 @@ $.widget('ui.carousel', {
         this.offset = 0;
 
 		this.element
-			.addClass("ui-carousel"
-				+ " ui-carousel-" + this.orientation
-				+ " ui-widget"
-				+ " ui-widget-content"
-				+ " ui-corner-all"
-				+ " ui-helper-clearfix");
+			.addClass("ui-carousel" +
+				" ui-carousel-" + this.orientation +
+				" ui-widget" +
+				" ui-widget-content" +
+				" ui-corner-all" +
+				" ui-helper-clearfix");
 
         var ul = this.slide = $("ul", div);
         this.clip = $(".ui-carousel-clip", div);
 
         // Auto add clip wrapper if missing.
-        if (this.clip.size() == 0) {
+        if (this.clip.size() === 0) {
             ul.wrap('<div class="ui-carousel-clip"></div>');
             this.clip = $(".ui-carousel-clip", div);
         }
@@ -70,8 +69,9 @@ $.widget('ui.carousel', {
     },
 
     visible: function(from) {
-        if (from == undefined)
+        if (from === undefined) {
             from = this.curr;
+        }
         return this.element.find('li').slice(from).slice(0, this.options.visible);
     },
 
@@ -96,7 +96,9 @@ $.widget('ui.carousel', {
 
     reset: function() {
         var o = this.options;
-        if (this.curr == o.start) return;
+        if (this.curr == o.start) {
+            return;
+        }
         this.curr = o.start;
         this._set(o.start);
     },
@@ -135,10 +137,12 @@ $.widget('ui.carousel', {
             v = o.visible;
         if (!o.circular) {
             // If non-circular and to points to first or last, we just return.
-            if (to > this.itemLength - v)
+            if (to > this.itemLength - v) {
                 to = this.itemLength - v;
-            if (to < 0)
+            }
+            if (to < 0) {
                 to = 0;
+            }
         }
 
         // Make sure we actually want to go somewhere.
@@ -159,7 +163,6 @@ $.widget('ui.carousel', {
                     to -= l;
                     this._set(prev);
                 }
-                to = to;
             }
 
             this.curr = to;     // reset internal pointer.
@@ -191,7 +194,7 @@ $.widget('ui.carousel', {
 	_detectOrientation: function() {
 		this.orientation = this.options.orientation == 'vertical' ? 'vertical' : 'horizontal';
 	},
-	
+
 	_detectNavigation: function() {
 	    var self = this,
 	        class_p = " ui-icon-triangle-1-",
@@ -219,12 +222,12 @@ $.widget('ui.carousel', {
     // Apply a dimension.
     _dimension: function(e, prop, value) {
         // To be flexible, we only apply then if they aren't 0 so we can recover hidden carousels.
-        if (value != 0) {
+        if (value !== 0) {
             e.css(prop, value + "px");
         }
     },
     _css: function(el, prop) {
-        return parseInt($.css(el[0], prop)) || 0;
+        return parseInt($.css(el[0], prop), 10) || 0;
     },
     _width: function(el) {
         return  el[0].offsetWidth + this._css(el, 'marginLeft') + this._css(el, 'marginRight');
