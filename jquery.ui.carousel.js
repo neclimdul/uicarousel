@@ -150,6 +150,7 @@ $.widget('ui.carousel', {
                 e = this.element,
                 l = this.itemLength,
                 b = this.offset; // buffer size.
+            this.running = true;
 
             if (o.circular) {           // If circular we need to shift at the ends to emulate rotation.
                 if (to < -b) {          // If at the beginning, then go to end.
@@ -168,7 +169,6 @@ $.widget('ui.carousel', {
             to += b;  // adjust fo any offset.
 
             o.beforeStart.call(e, this.visible(this.curr), this.visible(to));
-            this.running = true;
 
             this.slide.animate(
                 this.animCss == "left" ?
