@@ -22,13 +22,13 @@ $.widget('ui.carousel', {
         this.curr = o.start;
         this.offset = 0;
 
-		this.element
-			.addClass("ui-carousel" +
-				" ui-carousel-" + this.orientation +
-				" ui-widget" +
-				" ui-widget-content" +
-				" ui-corner-all" +
-				" ui-helper-clearfix");
+        this.element
+            .addClass("ui-carousel" +
+                " ui-carousel-" + this.orientation +
+                " ui-widget" +
+                " ui-widget-content" +
+                " ui-corner-all" +
+                " ui-helper-clearfix");
 
         var ul = this.slide = $("ul", div);
         this.clip = $(".ui-carousel-clip", div);
@@ -191,14 +191,14 @@ $.widget('ui.carousel', {
         this.slide.css(this.animCss, -((p + this.offset) * this.liSize) + "px");
     },
 
-	_detectOrientation: function() {
-		this.orientation = this.options.orientation == 'vertical' ? 'vertical' : 'horizontal';
-	},
+    _detectOrientation: function() {
+        this.orientation = this.options.orientation == 'vertical' ? 'vertical' : 'horizontal';
+    },
 
-	_detectNavigation: function() {
-	    var self = this,
-	        class_p = " ui-icon-triangle-1-",
-	        class_n = " ui-icon-triangle-1-";
+    _detectNavigation: function() {
+        var self = this,
+            class_p = " ui-icon-triangle-1-",
+            class_n = " ui-icon-triangle-1-";
         if (this.orientation == "horizontal") {
             class_p += "w";
             class_n += "e";
@@ -207,17 +207,17 @@ $.widget('ui.carousel', {
             class_p += "n";
             class_n += "s";
         }
-	    $(".ui-carousel-prev", this.element)
-	        .addClass("ui-icon" + class_p)
-	        .click(function() {
-	            self.prev();
-    	    });
-	    $(".ui-carousel-next", this.element)
-	        .addClass("ui-icon" + class_n)
-    	    .click(function() {
-    	        self.next();
-    	    });
-	},
+        $(".ui-carousel-prev", this.element)
+            .addClass("ui-icon" + class_p)
+            .click(function() {
+                self.prev();
+            });
+        $(".ui-carousel-next", this.element)
+            .addClass("ui-icon" + class_n)
+            .click(function() {
+                self.next();
+            });
+    },
 
     // Apply a dimension.
     _dimension: function(e, prop, value) {
