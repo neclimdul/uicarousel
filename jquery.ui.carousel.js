@@ -30,7 +30,7 @@ $.widget('ui.carousel', {
                 " ui-corner-all" +
                 " ui-helper-clearfix");
 
-        var ul = this.slide = $("ul", div);
+        var ul = this.slide = $(">ul", div);
         this.clip = $(".ui-carousel-clip", div);
 
         // Auto add clip wrapper if missing.
@@ -42,7 +42,7 @@ $.widget('ui.carousel', {
         // Special handling when circular for smooth scrolling.
         if (o.circular) {
             this.offset = Math.max(o.visible, o.scroll);
-            var tLi = $("li", ul);
+            var tLi = ul.children();
             ul.prepend(tLi.slice(tLi.size() - this.offset).clone())
               .append(tLi.slice(0, this.offset).clone());
         }
@@ -111,7 +111,7 @@ $.widget('ui.carousel', {
         this.animCss = vert ? "top" : "left";
 
         // Setup items and item information.
-        var li = $("li", this.slide).addClass("ui-carousel-item");
+        var li = this.slide.children().addClass("ui-carousel-item");
         this.itemLength = li.size() - (2 * this.offset);
         // li.css({width: li.width(), height: li.height()});
 
