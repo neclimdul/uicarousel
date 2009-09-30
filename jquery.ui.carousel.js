@@ -204,12 +204,14 @@ $.widget('ui.carousel', {
         }
         $(".ui-carousel-prev", this.element)
             .addClass("ui-icon" + class_p)
-            .click(function() {
+            .click(function(e) {
+            	e.preventDefault();
                 self.prev();
             });
         $(".ui-carousel-next", this.element)
             .addClass("ui-icon" + class_n)
-            .click(function() {
+            .click(function(e) {
+            	e.preventDefault();
                 self.next();
             });
     },
