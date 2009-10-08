@@ -30,7 +30,7 @@ $.widget('ui.carousel', {
                 " ui-corner-all" +
                 " ui-helper-clearfix");
 
-        var ul = this.slide = $(">ul", div);
+        var ul = this.slide = $(">ul, .ui-carousel-clip>ul", div);
         this.clip = $(".ui-carousel-clip", div);
 
         // Auto add clip wrapper if missing.
@@ -116,7 +116,7 @@ $.widget('ui.carousel', {
         // li.css({width: li.width(), height: li.height()});
 
         // Store the visible size for the scoll dimension.
-        this.liSize = vert ? this._height(li) : this._width(li);    // Full li size(incl margin)-Used for animation
+        this.liSize = vert ? _height(li) : _width(li);    // Full li size(incl margin)-Used for animation
 
         // Setup our slide ul.
         this.slide.addClass("ui-carousel-slide");
@@ -214,19 +214,20 @@ $.widget('ui.carousel', {
                 e.preventDefault();
                 self.next();
             });
-    },
-
-    _css: function(el, prop) {
-        return parseInt($.css(el[0], prop), 10) || 0;
-    },
-    _width: function(el) {
-        return  el[0].offsetWidth + this._css(el, 'marginLeft') + this._css(el, 'marginRight');
-    },
-    _height: function(el) {
-        return el[0].offsetHeight + this._css(el, 'marginTop') + this._css(el, 'marginBottom');
     }
 });
 
+function _css(el, prop) {
+    return parseInt($.css(el[0], prop), 10) || 0;
+}
+
+function _width(el) {
+    return el[0].offsetWidth + _css(el, 'marginLeft') + _css(el, 'marginRight');
+}
+
+function _height(el) {
+    return el[0].offsetHeight + _css(el, 'marginTop') + _css(el, 'marginBottom');
+}
 
 $.extend($.ui.carousel, {
     defaults: {
