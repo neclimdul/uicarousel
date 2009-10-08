@@ -205,13 +205,13 @@ $.widget('ui.carousel', {
         $(".ui-carousel-prev", this.element)
             .addClass("ui-icon" + class_p)
             .click(function(e) {
-            	e.preventDefault();
+                e.preventDefault();
                 self.prev();
             });
         $(".ui-carousel-next", this.element)
             .addClass("ui-icon" + class_n)
             .click(function(e) {
-            	e.preventDefault();
+                e.preventDefault();
                 self.next();
             });
     },
