@@ -128,12 +128,17 @@ $.widget('ui.carousel', {
 
         // Make sure we're in the right location.
         this._set(this.curr);
+
+        this._updateNav();
     },
 
     _go: function(to) {
         var self = this,
             o = this.options,
             v = o.visible;
+
+        // This is a little redundant now because of the state-disabled stuff but necessary since this
+        // can be called indirectly though prev and next using the UI API.
         if (!o.circular) {
             // If non-circular and to points to first or last, we just return.
             if (to > this.itemLength - v) {
@@ -177,6 +182,7 @@ $.widget('ui.carousel', {
                 o.speed, o.easing,
                 function() {
                     self.running = false;
+                    self._updateNav();
                     o.afterEnd.call(e, self.visible(to), self.visible(prev));
                 }
             );
@@ -188,6 +194,22 @@ $.widget('ui.carousel', {
     // Directly set the location of the carousel instead of animating to a location.
     _set: function(p) {
         this.slide.css(this.animCss, -((p + this.offset) * this.liSize) + "px");
+    },
+
+    _updateNav: function() {
+        var o = this.options;
+        if (!o.circular) {
+            // If the first element is visible, disable the previous button.
+            _setDisabled(this.nav.prev, this.visible(0));
+            // If the last element is visible or the carousel is small, disable the next button.
+            _setDisabled(this.nav.next, this.visible(this.itemLength));
+        }
+        else {
+            // If the carousel items are all visible, disable. Otherwise we're good.
+            var small = this.itemLength <= o.visible;
+            _setDisabled(this.nav.prev, small);
+            _setDisabled(this.nav.next, small);
+        }
     },
 
     _detectNavigation: function() {
@@ -202,20 +224,34 @@ $.widget('ui.carousel', {
             class_p += "n";
             class_n += "s";
         }
-        $(".ui-carousel-prev", this.element)
+
+        this.nav = {};
+        this.nav.prev = $(".ui-carousel-prev", this.element)
             .addClass("ui-icon" + class_p)
             .click(function(e) {
                 e.preventDefault();
-                self.prev();
+                if ($(this).not("ui-state-disabled"))
+                    self.prev();
             });
-        $(".ui-carousel-next", this.element)
+
+        this.nav.next = $(".ui-carousel-next", this.element)
             .addClass("ui-icon" + class_n)
             .click(function(e) {
                 e.preventDefault();
-                self.next();
+                if ($(this).not("ui-state-disabled"))
+                    self.next();
             });
     }
 });
+
+function _setDisabled(el, state) {
+    if (state) {
+        $(el).addClass('ui-state-disabled');
+    }
+    else {
+        $(el).removeClass('ui-state-disabled');
+    }
+}
 
 function _css(el, prop) {
     return parseInt($.css(el[0], prop), 10) || 0;
