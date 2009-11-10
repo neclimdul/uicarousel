@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <title>jQuery UI Carousel Example Page</title>
+    <link type="text/css" href="../css/ui.carousel.css" rel="stylesheet" />
+    <link type="text/css" href="../ui/css/ui-lightness/jquery-ui-1.7.2.custom.css" rel="stylesheet" />
+
+    <script type="text/javascript" src="../ui/js/jquery-1.3.2.min.js"></script>
+    <script type="text/javascript" src="../ui/js/jquery-ui-1.7.2.custom.min.js"></script>
+    <script type="text/javascript" src="../jquery.ui.carousel.js"></script>
+    <script type="text/javascript">
+
+      $(function(){
+        $("#tabs").tabs({
+          show: function(e, ui) {
+            $('.ui-carousel', ui.panel).carousel('refresh');
+          }
+        });
+
+        $('#carousel-basic').carousel();
+        $('#carousel-circular').carousel({
+          circular: true,
+          scroll: 3
+        });
+        $('#carousel-vert').carousel({
+          scroll: 2,
+          circular: true,
+          orientation: "vertical"
+        });
+      });
+    </script>
+    <style type="text/css">
+      #tabs {
+        width: 600px;
+      }
+      .code {
+      }
+      /*demo page css*/
+      .ui-carousel img {
+        height: 132px;
+        width: 132px;
+      }
+      /* Hacks to make tabs work. */
+      .ui-carousel-horizontal .ui-carousel-clip {
+        width: 396px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>JQuery UI Carousel</h1>
+    <h2>More information</h2>
+      <ul>
+        <li><a href="http://wiki.github.com/neclimdul/uicarousel">wiki</a></li>
+        <li><a href="http://github.com/neclimdul/uicarousel">git</a></li>
+        <li><a href="http://nerdpalace.net/projects/uicarousel/demo/">demo</a></li>
+      </ul>
+
+    <h2>Example</h2>
+    <div id="tabs">
+      <ul>
+        <li><a href="#carousel-basic-tab">Normal</a></li>
+        <li><a href="#carousel-circular-tab">Circular</a></li>
+        <li><a href="#carousel-vert-tab">Vertical</a></li>
+      </ul>
+      <div id="carousel-basic-tab">
+        <div id="carousel-basic">
+          <a class="ui-carousel-prev">Left</a>
+          <ul>
+            <li><img src="images/coheed_10_1.jpg" /><div>1</div></li>
+            <li><img src="images/coheed_11_1.jpg" /><div>2</div></li>
+            <li><img src="images/coheed_12_1.jpg" /><div>3</div></li>
+            <li><img src="images/coheed_13_1.jpg" /><div>4</div></li>
+            <li><img src="images/coheed_14_1.jpg" /><div>5</div></li>
+            <li><img src="images/coheed_15_1.jpg" /><div>6</div></li>
+            <li><img src="images/coheed_16_1.jpg" /><div>7</div></li>
+            <li><img src="images/coheed_17_1.jpg" /><div>8</div></li>
+            <li><img src="images/coheed_18_1.jpg" /><div>9</div></li>
+            <li><img src="images/coheed_19_1.jpg" /><div>10</div></li>
+          </ul>
+          <a class="ui-carousel-next">Right</a>
+        </div>
+<pre class="code">
+$('#carousel-basic').carousel();
+</pre>
+      </div>
+      <div id="carousel-circular-tab">
+        <div id="carousel-circular">
+          <a class="ui-carousel-prev">Left</a>
+          <div class="ui-carousel-clip">
+            <ul>
+              <li><img src="images/coheed_10_1.jpg" /><div>1</div></li>
+              <li><img src="images/coheed_11_1.jpg" /><div>2</div></li>
+              <li><img src="images/coheed_12_1.jpg" /><div>3</div></li>
+              <li><img src="images/coheed_13_1.jpg" /><div>4</div></li>
+              <li><img src="images/coheed_14_1.jpg" /><div>5</div></li>
+              <li><img src="images/coheed_15_1.jpg" /><div>6</div></li>
+              <li><img src="images/coheed_16_1.jpg" /><div>7</div></li>
+              <li><img src="images/coheed_17_1.jpg" /><div>8</div></li>
+              <li><img src="images/coheed_18_1.jpg" /><div>9</div></li>
+              <li><img src="images/coheed_19_1.jpg" /><div>10</div></li>
+            </ul>
+          </div>
+          <a class="ui-carousel-next">Right</a>
+        </div>
+<pre class="code">
+$('#carousel-circular').carousel({
+  circular: true,
+  scroll: 3
+});
+</pre>
+      </div>
+      <div id="carousel-vert-tab">
+        <div id="carousel-vert">
+          <a class="ui-carousel-prev">up</a>
+          <div class="ui-carousel-clip">
+            <ul>
+              <li><img src="images/coheed_10_1.jpg" /><div>1</div></li>
+              <li><img src="images/coheed_11_1.jpg" /><div>2</div></li>
+              <li><img src="images/coheed_12_1.jpg" /><div>3</div></li>
+              <li><img src="images/coheed_13_1.jpg" /><div>4</div></li>
+              <li><img src="images/coheed_14_1.jpg" /><div>5</div></li>
+              <li><img src="images/coheed_15_1.jpg" /><div>6</div></li>
+              <li><img src="images/coheed_16_1.jpg" /><div>7</div></li>
+              <li><img src="images/coheed_17_1.jpg" /><div>8</div></li>
+              <li><img src="images/coheed_18_1.jpg" /><div>9</div></li>
+              <li><img src="images/coheed_19_1.jpg" /><div>10</div></li>
+            </ul>
+          </div>
+          <a class="ui-carousel-next">down</a>
+        </div>
+<pre class="code">
+$('#carousel-vert').carousel({
+  scroll: 2,
+  circular: true,
+  orientation: "vertical"
+});
+</pre>
+      </div>
+    </div>
+  </body>
+</html>
+
+
