@@ -47,11 +47,11 @@ $.widget('ui.carousel', {
               .append(tLi.slice(0, this.offset).clone());
         }
 
-        this.refresh();
-
         // Now that everything is loaded, make things visible. This should help
         // developers mitigate flashing content on slower DOM loads.
         div.show();
+
+        this.refresh();
 
         if (o.auto) {
             setInterval(function() {
