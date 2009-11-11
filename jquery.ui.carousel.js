@@ -49,8 +49,9 @@ $.widget('ui.carousel', {
 
         this.refresh();
 
-        // Make things visible.
-        div.css("visibility", "visible");
+        // Now that everything is loaded, make things visible. This should help
+        // developers mitigate flashing content on slower DOM loads.
+        div.show();
 
         if (o.auto) {
             setInterval(function() {
