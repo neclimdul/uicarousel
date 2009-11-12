@@ -203,10 +203,12 @@ $.widget('ui.carousel', {
     _updateNav: function() {
         var o = this.options;
         if (!o.circular) {
+            var prev = this.visible(this.curr - 1).length === 0,
+                next = this.visible(this.curr + o.visible).length === 0;
             // If the first element is visible, disable the previous button.
-            _setDisabled(this.nav.prev, this.visible(0));
+            _setDisabled(this.nav.prev, prev);
             // If the last element is visible or the carousel is small, disable the next button.
-            _setDisabled(this.nav.next, this.visible(this.itemLength));
+            _setDisabled(this.nav.next, next);
         }
         else {
             // If the carousel items are all visible, disable. Otherwise we're good.
