@@ -87,14 +87,14 @@ $.widget('ui.carousel', {
         if (item > curr && item <= curr + o.visible) {
             return;
         }
-        var s = o.scroll, tmp = 0;
+        var s = o.scroll, next = 0;
         if (item <= curr) {
-            tmp = curr - (Math.floor((curr - item) / s) * s + s);
+            next = curr - (Math.floor((curr - item) / s) * s + s);
         }
         else {
-            tmp = curr + (Math.floor((item - curr) / s) * s - s);
+            next = curr + (Math.floor((item - curr) / s) * s - s);
         }
-        return this._go(tmp);
+        return this._go(next);
     },
 
     reset: function() {
