@@ -68,11 +68,14 @@ $.widget('ui.carousel', {
         return this._go(this.curr + this.options.scroll);
     },
 
+    // Returns a list of visible items.
+    // @param from
+    // Starting place to get visible items from. Default to current item.
     visible: function(from) {
         if (from === undefined) {
             from = this.curr;
         }
-        return this.element.find('li').slice(from).slice(0, this.options.visible);
+        return this.slide.children().slice(from, from + this.options.visible);
     },
 
     at: function() {
