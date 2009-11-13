@@ -236,7 +236,7 @@ $.widget('ui.carousel', {
             .addClass("ui-icon" + class_p)
             .click(function(e) {
                 e.preventDefault();
-                if ($(this).not("ui-state-disabled"))
+                if ($(this).not(".ui-state-disabled").length)
                     self.prev();
             });
 
@@ -244,7 +244,7 @@ $.widget('ui.carousel', {
             .addClass("ui-icon" + class_n)
             .click(function(e) {
                 e.preventDefault();
-                if ($(this).not("ui-state-disabled"))
+                if ($(this).not(".ui-state-disabled").length)
                     self.next();
             });
     }
