@@ -117,10 +117,15 @@ $.widget('ui.carousel', {
         // Setup items and item information.
         var li = this.slide.children().addClass("ui-carousel-item");
         this.itemLength = li.size() - (2 * this.offset);
-        // li.css({width: li.width(), height: li.height()});
+
+        // reset css attributes before detecting ul measurements
+        li.css({width: '', height: ''});
 
         // Store the visible size for the scoll dimension.
         this.liSize = vert ? _height(li) : _width(li);    // Full li size(incl margin)-Used for animation
+
+        // Fix the the width so everything looks correct.
+        li.css({width: li.width(), height: li.height()});
 
         // Setup our slide ul.
         this.slide.addClass("ui-carousel-slide");
