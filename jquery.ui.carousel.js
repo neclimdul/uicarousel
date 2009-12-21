@@ -11,6 +11,7 @@
 (function($) {
 
 $.widget('ui.carousel', {
+    // Initialize the carousel. Called on startup by jQuery UI.
     _init: function() {
         var self = this,
             o = this.options,
@@ -67,10 +68,12 @@ $.widget('ui.carousel', {
         }
     },
 
+    // Move the carousel backwards one iteration.
     prev: function() {
         return this._go(this.curr - this.options.scroll);
     },
 
+    // Move the carousel forward one iteration.
     next: function() {
         return this._go(this.curr + this.options.scroll);
     },
@@ -85,10 +88,12 @@ $.widget('ui.carousel', {
         return this.slide.children().slice(from, from + this.options.visible);
     },
 
+    // Returns the offset of the first visible carousel item.
     at: function() {
         return this.curr;
     },
 
+    // Bring a carousel item into view.
     view: function(item) {
         var o = this.options, curr = this.curr;
         if (item > curr && item <= curr + o.visible) {
@@ -104,6 +109,7 @@ $.widget('ui.carousel', {
         return this._go(next);
     },
 
+    // Reset the carousel to the initial position.
     reset: function() {
         var o = this.options;
         if (this.curr == o.start) {
@@ -148,6 +154,9 @@ $.widget('ui.carousel', {
         this._updateNav();
     },
 
+    // Helper function the moves the carousel to a point on the carousel.
+    // @param to
+    //   The integer offset of the element. Between 0 and this.itemLength
     _go: function(to) {
         var self = this,
             o = this.options,
@@ -212,6 +221,7 @@ $.widget('ui.carousel', {
         this.slide.css(this.animCss, -((p + this.offset) * this.liSize) + "px");
     },
 
+    // Update nav links, enabling/disabling as needed.
     _updateNav: function() {
         var o = this.options;
         if (!o.circular) {
@@ -230,6 +240,7 @@ $.widget('ui.carousel', {
         }
     },
 
+    // Automated detection and setup of navigation buttons.
     _detectNavigation: function() {
         var self = this,
             class_p = " ui-icon-triangle-1-",
@@ -262,6 +273,7 @@ $.widget('ui.carousel', {
     }
 });
 
+// Disable element using the jQuery UI disabled state class.
 function _setDisabled(el, state) {
     if (state) {
         $(el).addClass('ui-state-disabled');
@@ -271,14 +283,17 @@ function _setDisabled(el, state) {
     }
 }
 
+// Get the integer value for a css property of a jQuery element.
 function _css(el, prop) {
     return parseInt($.css(el[0], prop), 10) || 0;
 }
 
+// Get the integer width for a jQuery element.
 function _width(el) {
     return el[0].offsetWidth + _css(el, 'marginLeft') + _css(el, 'marginRight');
 }
 
+// Get the integer height for a jQuery element.
 function _height(el) {
     return el[0].offsetHeight + _css(el, 'marginTop') + _css(el, 'marginBottom');
 }
