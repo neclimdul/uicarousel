@@ -18,7 +18,11 @@
           }
         });
 
-        $('#carousel-basic').carousel();
+        $('#carousel-basic').carousel({
+          visible: 3,
+          scroll: 2,
+          circular: false
+        });
         $('#carousel-circular').carousel({
           circular: true,
           scroll: 3

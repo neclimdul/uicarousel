@@ -54,9 +54,16 @@ $.widget('ui.carousel', {
         this.refresh();
 
         if (o.auto) {
+            // Calculate the animation delay.
+            var delay = 0;
+            if (typeof o.speed === 'number')
+                delay = o.speed;
+            else
+                delay = $.fx.speeds[o.speed] || $.fx.speeds._default;
+
             setInterval(function() {
                 self.next();
-            }, o.auto + o.speed);
+            }, o.auto + delay);
         }
     },
 
