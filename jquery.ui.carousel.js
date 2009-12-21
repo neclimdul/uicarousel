@@ -52,20 +52,11 @@ $.widget('ui.carousel', {
         // developers mitigate flashing content on slower DOM loads.
         div.show();
 
+        // Refresh/setup all the item widths.
         this.refresh();
 
-        if (o.auto) {
-            // Calculate the animation delay.
-            var delay = 0;
-            if (typeof o.speed === 'number')
-                delay = o.speed;
-            else
-                delay = $.fx.speeds[o.speed] || $.fx.speeds._default;
-
-            setInterval(function() {
-                self.next();
-            }, o.auto + delay);
-        }
+        // Start auto rotation.
+        this.autoReset();
     },
 
     // Move the carousel backwards one iteration.
@@ -152,6 +143,28 @@ $.widget('ui.carousel', {
         this._set(this.curr);
 
         this._updateNav();
+    },
+
+    autoReset: function() {
+        var o = this.options, self = this;
+
+        // If we need to, clear the old timer.
+        if (typeof this.autoTimer !== 'undefined')
+            clearInterval(this.autoTimer);
+
+        if (o.auto) {
+            // Calculate the rotation delay.
+            var delay = o.auto;
+            if (typeof o.speed === 'number')
+                delay += o.speed;
+            else
+                delay += $.fx.speeds[o.speed] || $.fx.speeds._default;
+
+            // Start a new interval timer.
+            this.autoTimer = setInterval(function() {
+                self.next();
+            }, delay);
+        }
     },
 
     // Helper function the moves the carousel to a point on the carousel.
