@@ -149,19 +149,17 @@ $.widget('ui.carousel', {
         var o = this.options, self = this;
 
         // If we need to, clear the old timer.
-        if (typeof this.autoTimer !== 'undefined')
-            clearInterval(this.autoTimer);
+        if (typeof this.autoTimer !== 'undefined') {
+            clearTimeout(this.autoTimer);
+            delete this.autoTimer;
+        }
 
         if (o.auto) {
             // Calculate the rotation delay.
             var delay = o.auto;
-            if (typeof o.speed === 'number')
-                delay += o.speed;
-            else
-                delay += $.fx.speeds[o.speed] || $.fx.speeds._default;
 
             // Start a new interval timer.
-            this.autoTimer = setInterval(function() {
+            this.autoTimer = setTimeout(function() {
                 self.next();
             }, delay);
         }
@@ -226,6 +224,7 @@ $.widget('ui.carousel', {
                 function() {
                     self.running = false;
                     self._updateNav();
+                    self.autoReset();
                     o.afterEnd.call(e, self.visible(to), self.visible(prev));
                 }
             );
