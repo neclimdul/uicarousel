@@ -18,18 +18,14 @@
           }
         });
 
-        $('#carousel-basic').carousel({
-          visible: 3,
-          scroll: 2,
-          circular: false
-        });
+        $('#carousel-basic').carousel();
         $('#carousel-circular').carousel({
           circular: true,
           scroll: 3
         });
         $('#carousel-vert').carousel({
           scroll: 2,
-          circular: true,
+          circular: false,
           orientation: "vertical"
         });
       });
@@ -136,7 +132,7 @@ $('#carousel-circular').carousel({
 <pre class="code">
 $('#carousel-vert').carousel({
   scroll: 2,
-  circular: true,
+  circular: false,
   orientation: "vertical"
 });
 </pre>
