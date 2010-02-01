@@ -210,7 +210,7 @@ $.widget('ui.carousel', {
         this.autoReset();
     },
 
-    // Helper function the moves the carousel to a point on the carousel.
+    // Helper function that animates the carousel to a point on the carousel.
     // @param to
     //   The integer offset of the element. Between 0 and this.itemLength
     _go: function(to) {
