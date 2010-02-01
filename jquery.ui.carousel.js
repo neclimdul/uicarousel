@@ -168,7 +168,7 @@ $.widget('ui.carousel', {
         this.li.css({width: '', height: ''});
 
         // Store the visible size for the scoll dimension.
-        this.liSize = vert ? _height(this.li) : _width(this.li);    // Full li size(incl margin)-Used for animation
+        this.liSize = vert ? this.li.outerHeight(true) : this.li.outerWidth(true);    // Full li size(incl margin)-Used for animation
 
         // Fix the the width so everything looks correct.
         this.li.css({width: this.li.width(), height: this.li.height()});
@@ -340,21 +340,6 @@ function _setDisabled(el, state) {
     }
 }
 
-// Get the integer value for a css property of a jQuery element.
-function _css(el, prop) {
-    return parseInt($.css(el[0], prop), 10) || 0;
-}
-
-// Get the integer width for a jQuery element.
-function _width(el) {
-    return el[0].offsetWidth + _css(el, 'marginLeft') + _css(el, 'marginRight');
-}
-
-// Get the integer height for a jQuery element.
-function _height(el) {
-    return el[0].offsetHeight + _css(el, 'marginTop') + _css(el, 'marginBottom');
-}
-
 $.extend($.ui.carousel, {
     defaults: {
         auto: null,
@@ -369,6 +354,5 @@ $.extend($.ui.carousel, {
         afterEnd: function(visibleAfter, visibleBefore) { }
     }
 });
-
 
 })(jQuery);
