@@ -15,7 +15,7 @@ $.widget('ui.carousel', {
     _init: function() {
         var self = this,
             o = this.options,
-            div = this.element;
+            e = this.element;
 
         this.orientation = this.options.orientation == 'vertical' ? 'vertical' : 'horizontal';
         this.running = false;
@@ -23,21 +23,20 @@ $.widget('ui.carousel', {
         this.offset = 0;
         this._detectNavigation();
 
-        this.element
-            .addClass("ui-carousel" +
+        e.addClass("ui-carousel" +
                 " ui-carousel-" + this.orientation +
                 " ui-widget" +
                 " ui-widget-content" +
                 " ui-corner-all" +
                 " ui-helper-clearfix");
 
-        var ul = this.slide = $(">ul, .ui-carousel-clip>ul", div);
-        this.clip = $(".ui-carousel-clip", div);
+        var ul = this.slide = $(">ul, .ui-carousel-clip>ul", e);
+        this.clip = $(".ui-carousel-clip", e);
 
         // Auto add clip wrapper if missing.
         if (this.clip.size() === 0) {
             ul.wrap('<div class="ui-carousel-clip"></div>');
-            this.clip = $(".ui-carousel-clip", div);
+            this.clip = $(".ui-carousel-clip", e);
         }
 
         // Special handling when circular for smooth scrolling.
@@ -50,7 +49,7 @@ $.widget('ui.carousel', {
 
         // Now that everything is loaded, make things visible. This should help
         // developers mitigate flashing content on slower DOM loads.
-        div.show();
+        e.show();
 
         // Refresh/setup all the item widths.
         this.refresh();
