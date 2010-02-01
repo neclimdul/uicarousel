@@ -60,7 +60,7 @@ $.widget('ui.carousel', {
         else if (this.curr < 0) {
             this.curr += this.itemLength;
         }
-        this._set(this.curr);
+        this.set(this.curr);
 
         // Make sure buffers are clear before we rebuild them.
         this.slide.children(".ui-carousel-buffer").remove();
@@ -151,8 +151,7 @@ $.widget('ui.carousel', {
         if (this.curr == o.start) {
             return;
         }
-        this.curr = o.start;
-        this._set(o.start);
+        this.set(o.start);
     },
 
     // Refresh measurements.
@@ -179,7 +178,7 @@ $.widget('ui.carousel', {
         this.clip.css(sizeCss, this.liSize * o.visible);
 
         // Make sure we're in the right location.
-        this._set(this.curr);
+        this.set(this.curr);
 
         this._updateNav();
     },
@@ -242,12 +241,12 @@ $.widget('ui.carousel', {
                 if (to < -b) {          // If at the beginning, then go to end.
                     prev += l;
                     to += l;
-                    this._set(prev);
+                    this.set(prev);
                 }
                 else if (to > l) {      // If at end, then go to beginning.
                     prev -= l;
                     to -= l;
-                    this._set(prev);
+                    this.set(prev);
                 }
             }
 
@@ -274,7 +273,8 @@ $.widget('ui.carousel', {
     },
 
     // Directly set the location of the carousel instead of animating to a location.
-    _set: function(p) {
+    set: function(p) {
+        this.curr = p; // reset the internal pointer so 
         this.slide.css(this.animCss, -((p + this.offset) * this.liSize) + "px");
     },
 
