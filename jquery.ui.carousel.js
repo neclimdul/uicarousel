@@ -20,7 +20,6 @@ $.widget('ui.carousel', {
         this.orientation = this.options.orientation == 'vertical' ? 'vertical' : 'horizontal';
         this.running = false;
         this.curr = o.start;
-        this.offset = 0;
         this._detectNavigation();
 
         e.addClass("ui-carousel" +
@@ -30,32 +29,78 @@ $.widget('ui.carousel', {
                 " ui-corner-all" +
                 " ui-helper-clearfix");
 
-        var ul = this.slide = $(">ul, .ui-carousel-clip>ul", e);
+        this.slide = $(">ul, .ui-carousel-clip>ul", e)
+            .addClass("ui-carousel-slide");
         this.clip = $(".ui-carousel-clip", e);
 
         // Auto add clip wrapper if missing.
         if (this.clip.size() === 0) {
-            ul.wrap('<div class="ui-carousel-clip"></div>');
+            this.slide.wrap('<div class="ui-carousel-clip"></div>');
             this.clip = $(".ui-carousel-clip", e);
         }
 
-        // Special handling when circular for smooth scrolling.
-        if (o.circular) {
-            this.offset = Math.max(o.visible, o.scroll);
-            var tLi = ul.children();
-            ul.prepend(tLi.slice(tLi.size() - this.offset).clone())
-              .append(tLi.slice(0, this.offset).clone());
-        }
-
-        // Now that everything is loaded, make things visible. This should help
-        // developers mitigate flashing content on slower DOM loads.
-        e.show();
-
-        // Refresh/setup all the item widths.
-        this.refresh();
+        // Build internals. This is the same as when rebuild and we want to
+        // make sure things are made visible in case they where hidden during
+        // load.
+        this.rebuild(true);
 
         // Start auto rotation.
         this.autoReset();
+    },
+
+    // Rebuild the carousel's internals values.
+    // This is useful for displays that may be built dynamically.
+    rebuild: function(show) {
+        var o = this.options;
+
+        // Reset the position back into a safe location.
+        // @todo - It's possible that itemLength isn't set.
+        if (this.curr >= this.itemLength) {
+            this.curr -= this.itemLength;
+        }
+        else if (this.curr < 0) {
+            this.curr += this.itemLength;
+        }
+        this._set(this.curr);
+
+        // Make sure buffers are clear before we rebuild them.
+        this.slide.children(".ui-carousel-buffer").remove();
+        this.offset = 0;
+
+        // Build an updated list of items.
+        this.li = this.slide.children()
+            .addClass("ui-carousel-item");
+
+        // Special handling when circular for smooth scrolling.
+        if (o.circular) {
+            var li = this.li;
+            this.offset = Math.max(o.visible, o.scroll);
+
+            this.slide
+                .prepend(
+                    li.slice(li.size() - this.offset)
+                        .clone()
+                        .addClass("ui-carousel-buffer"))
+                .append(
+                    li.slice(0, this.offset)
+                        .clone()
+                        .addClass("ui-carousel-buffer"));
+
+            // Refresh list with new buffer items.
+            this.li = this.slide.children();
+        }
+
+        // Update our item length.
+        this.itemLength = this.li.size() - (2 * this.offset);
+
+        // Now that everything is loaded, make sure things are visible. This
+        // should help developers mitigate flashing content on slower DOM loads.
+        if (show) {
+            this.element.show();
+        }
+
+        // Refresh/setup all the item widths.
+        this.refresh();
     },
 
     // Move the carousel backwards one iteration.
@@ -117,21 +162,15 @@ $.widget('ui.carousel', {
 
         this.animCss = vert ? "top" : "left";
 
-        // Setup items and item information.
-        var li = this.slide.children().addClass("ui-carousel-item");
-        this.itemLength = li.size() - (2 * this.offset);
-
         // reset css attributes before detecting ul measurements
-        li.css({width: '', height: ''});
+        this.li.css({width: '', height: ''});
 
         // Store the visible size for the scoll dimension.
-        this.liSize = vert ? _height(li) : _width(li);    // Full li size(incl margin)-Used for animation
+        this.liSize = vert ? _height(this.li) : _width(this.li);    // Full li size(incl margin)-Used for animation
 
         // Fix the the width so everything looks correct.
-        li.css({width: li.width(), height: li.height()});
+        this.li.css({width: this.li.width(), height: this.li.height()});
 
-        // Setup our slide ul.
-        this.slide.addClass("ui-carousel-slide");
         // make width full length of items.
         this.slide.css(sizeCss, this.liSize * (this.itemLength + 2 * this.offset));
 
