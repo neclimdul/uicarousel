@@ -130,11 +130,13 @@ $.widget('ui.carousel', {
 
     // Bring a carousel item into view.
     view: function(item) {
-        var o = this.options, curr = this.curr;
+        var o = this.options,
+            curr = this.curr;
         if (item > curr && item <= curr + o.visible) {
             return;
         }
-        var s = o.scroll, next = 0;
+        var s = o.scroll,
+            next = 0;
         if (item <= curr) {
             next = curr - (Math.floor((curr - item) / s) * s + s);
         }
