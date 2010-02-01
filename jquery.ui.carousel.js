@@ -13,8 +13,7 @@
 $.widget('ui.carousel', {
     // Initialize the carousel. Called on startup by jQuery UI.
     _init: function() {
-        var self = this,
-            o = this.options,
+        var o = this.options,
             e = this.element;
 
         this.orientation = this.options.orientation == 'vertical' ? 'vertical' : 'horizontal';
@@ -186,7 +185,7 @@ $.widget('ui.carousel', {
     },
 
     autoReset: function() {
-        var o = this.options, self = this;
+        var o = this.options;
 
         // If we need to, clear the old timer.
         if (typeof this.autoTimer !== 'undefined') {
@@ -196,7 +195,8 @@ $.widget('ui.carousel', {
 
         if (o.auto) {
             // Calculate the rotation delay.
-            var delay = o.auto;
+            var delay = o.auto,
+                self = this;
 
             // Start a new interval timer.
             this.autoTimer = setTimeout(function() {
@@ -214,8 +214,7 @@ $.widget('ui.carousel', {
     // @param to
     //   The integer offset of the element. Between 0 and this.itemLength
     _go: function(to) {
-        var self = this,
-            o = this.options,
+        var o = this.options,
             v = o.visible;
 
         // This is a little redundant now because of the state-disabled stuff but necessary since this
@@ -235,7 +234,8 @@ $.widget('ui.carousel', {
             var prev = this.curr,
                 e = this.element,
                 l = this.itemLength,
-                b = this.offset; // buffer size.
+                b = this.offset, // buffer size.
+                self = this;
             this.running = true;
 
             if (o.circular) {           // If circular we need to shift at the ends to emulate rotation.
