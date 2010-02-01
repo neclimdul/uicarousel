@@ -251,8 +251,8 @@ $.widget('ui.carousel', {
                 }
             }
 
-            this.curr = to;     // reset internal pointer.
-            to += b;  // adjust fo any offset.
+            this.curr = to; // reset internal pointer.
+            to += b;        // adjust to with offset(buffer size).
 
             o.beforeStart.call(e, this.visible(this.curr), this.visible(to));
 
