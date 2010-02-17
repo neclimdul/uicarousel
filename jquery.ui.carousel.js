@@ -60,7 +60,6 @@ $.widget('ui.carousel', {
         else if (this.curr < 0) {
             this.curr += this.itemLength;
         }
-        this.set(this.curr);
 
         // Make sure buffers are clear before we rebuild them.
         this.slide.children(".ui-carousel-buffer").remove();
