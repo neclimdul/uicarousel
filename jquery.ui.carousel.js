@@ -165,8 +165,9 @@ $.widget('ui.carousel', {
         // reset css attributes before detecting ul measurements
         this.li.css({width: '', height: ''});
 
-        // Store the visible size for the scoll dimension.
-        this.liSize = vert ? this.li.outerHeight(true) : this.li.outerWidth(true);    // Full li size(incl margin)-Used for animation
+        // Store the visible size for the scoll dimension. This is the
+        // full li size(including margin) and is used for slider placement.
+        this.liSize = vert ? this.li.outerHeight(true) : this.li.outerWidth(true);
 
         // Fix the the width so everything looks correct.
         this.li.css({width: this.li.width(), height: this.li.height()});
@@ -274,7 +275,9 @@ $.widget('ui.carousel', {
 
     // Directly set the location of the carousel instead of animating to a location.
     set: function(p) {
-        this.curr = p; // reset the internal pointer so 
+        // Set the internal pointer.
+        this.curr = p;
+        // make sure the slider is in the correct position.
         this.slide.css(this.animCss, -((p + this.offset) * this.liSize) + "px");
     },
 
