@@ -1,5 +1,5 @@
 /**
- * jQuery UI Carousel 1.0.1
+ * jQuery UI Carousel 1.0.2
  *
  * (based on jCarouselLite 1.0.1)
  *
