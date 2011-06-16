@@ -164,12 +164,17 @@ $.widget('ui.carousel', {
         // reset css attributes before detecting ul measurements
         this.li.css({width: '', height: ''});
 
+        // Fix the the width so everything looks correct.
+        var max = {width:0, height:0};
+        this.li.each(function(){
+	  max.width = Math.max(max.width, $(this).width());
+	  max.height = Math.max(max.height, $(this).height());
+	});
+	this.li.css(max);
+
         // Store the visible size for the scoll dimension. This is the
         // full li size(including margin) and is used for slider placement.
         this.liSize = vert ? this.li.outerHeight(true) : this.li.outerWidth(true);
-
-        // Fix the the width so everything looks correct.
-        this.li.css({width: this.li.width(), height: this.li.height()});
 
         // make width full length of items.
         this.slide.css(sizeCss, this.liSize * (this.itemLength + 2 * this.offset));
